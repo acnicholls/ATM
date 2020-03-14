@@ -1,7 +1,7 @@
 # ATM
 Automated Teller Machine
 ------------------------------------------------------------
-#Login names and PINs
+# Login names and PINs
 
 
 	NAME			PIN
@@ -17,7 +17,7 @@ Automated Teller Machine
 	Connery			C003
 	Steele			S003
 
-#Exiting the Application
+# Exiting the Application
 
 	a) Login to the application using the login name Dallas and the PIN D001.
 	b) Click FILE > CLOSE ATS.
