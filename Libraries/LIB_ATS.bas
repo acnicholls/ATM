@@ -8,6 +8,16 @@ Public Const DEMO_MODE As Boolean = True
 Public Const ADMINISTRATOR_NAME As String = "Korben Dallas"
 Public Const ADMINISTRATOR_PIN As String = "D001"
 
+' global variables for the file names containing data
+Public gstrDataFileLocation As String
+Public gstrAccountFile As String
+Public gstrTempAccountFile As String
+Public gstrTransactionFile As String
+Public gstrTransactionIdFile As String
+Public gstrDailyBalanceFile As String
+Public gstrTempDailyBalanceFile As String
+Public gstrDatabaseFile As String
+
 'global variables used to display message to user
 Public gstrMessage As String
 Public gstrTitle As String
@@ -37,7 +47,7 @@ Public Sub ReadAccountsBalance()
     Dim curSavingsAccountBalance As Currency
     'open the file and read a record, test record against current user account number
     intFileHandleInput = FreeFile
-    Open App.Path & "\Data\Accounts.dat" For Input As #intFileHandleInput
+    Open gstrAccountFile For Input As #intFileHandleInput
     'while there is information to be read input each record and test the User account number
     'if it tests true then apply users account balances to global variables and exit
     Do While Not EOF(intFileHandleInput)
@@ -61,7 +71,7 @@ Public Sub WriteTransaction(ByVal strAccountType, ByVal strTransactionCode, ByVa
     lngCurrentTransactionID = CLng(GetNextTransactionID)
     intFileHandle = FreeFile
     'open the file and write current transaction record
-    Open App.Path & "\Data\Transactions.dat" For Append As #intFileHandle
+    Open gstrTransactionFile For Append As #intFileHandle
     Write #intFileHandle, Format(Date, "mm/dd/yyyy"); lngCurrentTransactionID; gstrUserName; gstrUserAccountNumber; _
                                       strAccountType; strTransactionCode; curTransactionAmount; gcurUserChequingAccountBalance; _
                                       gcurUserSavingsAccountBalance; gintTellerDailyBalance
@@ -81,7 +91,7 @@ Public Sub WriteAdministratorTransaction(ByVal strTransactionCode)
     'get newest transaction ID and write transaction to file depending on transaction code
     lngCurrentTransactionID = CLng(GetNextTransactionID)
     intFileHandle = FreeFile
-    Open App.Path & "\Data\Transactions.dat" For Append As #intFileHandle
+    Open gstrTransactionFile For Append As #intFileHandle
     Write #intFileHandle, Format(Date, "mm/dd/yyyy"); lngCurrentTransactionID; "ADMINISTRATOR"; "00000"; _
                                       ""; strTransactionCode; 5000, 0; 0; gintTellerDailyBalance
     Close #intFileHandle
@@ -99,17 +109,18 @@ Public Sub CheckTellerBalance()
     Dim strDate As String
     Dim intBalance As Integer
     Dim intFileHandle As Integer
+    Dim strMatchDate As String
     
     blnFound = False
     dtmToday = Date
     
     'read Teller's balance
     intFileHandle = FreeFile
-    Open App.Path & "\Data\DailyBalances.dat" For Input As #intFileHandle
+    Open gstrDailyBalanceFile For Input As #intFileHandle
     Do While Not EOF(intFileHandle)
         Input #intFileHandle, strDate, intBalance
         'if found use global variable to hold the amount found for today's balance
-        If Format(strDate, "mm/dd/yyyy") = dtmToday Then
+        If Format(strDate, "mm/dd/yyyy") = Format(dtmToday, "mm/dd/yyyy") Then
             blnFound = True
             gintTellerDailyBalance = intBalance
             Exit Do
@@ -122,7 +133,7 @@ Public Sub CheckTellerBalance()
         gintTellerDailyBalance = 5000
         strDate = Format(dtmToday, "mm/dd/yyyy")
         WriteAdministratorTransaction ("F")
-        Open App.Path & "\Data\DailyBalances.dat" For Append As #intFileHandle
+        Open gstrDailyBalanceFile For Append As #intFileHandle
         Write #intFileHandle, strDate, gintTellerDailyBalance
         Close #intFileHandle
     End If
@@ -141,10 +152,10 @@ Public Sub SaveTellerBalance()
     dtmDate = Now
     'open a file for reading
     intFileHandleInput = FreeFile
-    Open App.Path & "\Data\DailyBalances.dat" For Input As #intFileHandleInput
+    Open gstrDailyBalanceFile For Input As #intFileHandleInput
     'open a file for writing to
     intFileHandleOutput = FreeFile
-    Open App.Path & "\Data\TempDailyBalances.dat" For Output As #intFileHandleOutput
+    Open gstrTempDailyBalanceFile For Output As #intFileHandleOutput
     'while there is still information to be read, test the date against today's date and write to file if not equal
     Do While Not EOF(intFileHandleInput)
         Input #intFileHandleInput, strDate, intBalance
@@ -157,8 +168,8 @@ Public Sub SaveTellerBalance()
     Write #intFileHandleOutput, Format(dtmDate, "mm/dd/yyyy"); gintTellerDailyBalance
     Close
     'change the temp output file to the permanent DailyBalances.dat file
-    Kill App.Path & "\Data\DailyBalances.dat"
-    Name App.Path & "\Data\TempDailyBalances.dat" As App.Path & "\Data\DailyBalances.dat"
+    Kill gstrDailyBalanceFile
+    Name gstrTempDailyBalanceFile As gstrDailyBalanceFile
 
 End Sub
 
@@ -168,7 +179,7 @@ Public Function GetNextTransactionID() As Long
     Dim strNextTransactionID As String
     'open the file get the ID and close
      intFileHandle = FreeFile
-     Open App.Path & "\Data\TransactionIDGenerator.dat" For Input As #intFileHandle
+     Open gstrTransactionIdFile For Input As #intFileHandle
      Input #intFileHandle, strNextTransactionID
      Close #intFileHandle
      'make sure it's a long value, no decimals allowed
@@ -183,7 +194,7 @@ Public Function GenerateNextTransactionID(ByVal strCurrentTransactionID As Strin
      intFileHandle = FreeFile
     'add one to the current transaction ID and save to file for retrieval
      strCurrentTransactionID = strCurrentTransactionID + 1
-     Open App.Path & "\Data\TransactionIDGenerator.dat" For Output As #intFileHandle
+     Open gstrTransactionIdFile For Output As #intFileHandle
      Write #intFileHandle, Format(Val(strCurrentTransactionID), "0000000000")
      Close #intFileHandle
     'set the boolean concerning the next transaction ID number generated
@@ -205,10 +216,10 @@ Public Sub SaveAccountsBalance()
     dtmToday = Date
     'open Accounts.dat file to read from
     intFileHandleInput = FreeFile
-    Open App.Path & "\Data\Accounts.dat" For Input As #intFileHandleInput
+    Open gstrAccountFile For Input As #intFileHandleInput
     'create temporary file to write to
     intFileHandleOutput = FreeFile
-    Open App.Path & "\Data\TempAccounts.dat" For Output As #intFileHandleOutput
+    Open gstrTempAccountFile For Output As #intFileHandleOutput
     Do While Not EOF(intFileHandleInput)
     'read a record
         Input #intFileHandleInput, strUserAccountNumber, curChequingAccountBalance, curSavingsAccountBalance
@@ -222,8 +233,8 @@ Public Sub SaveAccountsBalance()
     Write #intFileHandleOutput, gstrUserAccountNumber, gcurUserChequingAccountBalance, gcurUserSavingsAccountBalance
     Close
     'delete old file and replace with temp one
-    Kill App.Path & "\Data\Accounts.dat"
-    Name App.Path & "\Data\TempAccounts.dat" As App.Path & "\Data\Accounts.dat"
+    Kill gstrAccountFile
+    Name gstrTempAccountFile As gstrAccountFile
     'send call to save teller's balance
     SaveTellerBalance
 
@@ -306,7 +317,7 @@ Public Sub PrintDateReport()
     Dim strLongDataToPrint As String * 23
     'open the transactions file
     intFileHandleTransaction = FreeFile
-    Open App.Path & "\Data\Transactions.dat" For Input As #intFileHandleTransaction
+    Open gstrTransactionFile For Input As #intFileHandleTransaction
     Do While Not EOF(intFileHandleTransaction)
         Input #intFileHandleTransaction, strDate, lngTransactionID, strUserName, strUserAccountNumber, _
             strAccountType, strTransactionCode, curTransactionAmount, curUserChequingAccountBalance, _
@@ -360,7 +371,7 @@ Public Sub PrintAllTransactions()
     Dim strLongDataToPrint As String * 23
     'open the transaction file
     intFileHandleTransaction = FreeFile
-    Open App.Path & "\Data\Transactions.dat" For Input As #intFileHandleTransaction
+    Open gstrTransactionFile For Input As #intFileHandleTransaction
     Do While Not EOF(intFileHandleTransaction)
     'input and print all records on file...no testing here folks!!
         Input #intFileHandleTransaction, strDate, lngTransactionID, strUserName, strUserAccountNumber, _
@@ -412,7 +423,7 @@ Public Sub PrintAccountReport()
     Dim strLongDataToPrint As String * 23
     'open transaction file
     intFileHandleTransaction = FreeFile
-    Open App.Path & "\Data\Transactions.dat" For Input As #intFileHandleTransaction
+    Open gstrTransactionFile For Input As #intFileHandleTransaction
     Do While Not EOF(intFileHandleTransaction)
         Input #intFileHandleTransaction, strDate, lngTransactionID, strUserName, strUserAccountNumber, _
             strAccountType, strTransactionCode, curTransactionAmount, curUserChequingAccountBalance, _
@@ -447,3 +458,11 @@ Public Sub PrintAccountReport()
     Printer.FontSize = 16
     Printer.Print Space(6); "End of Report"
 End Sub
+
+'Private Declare Function GetWindowsDirectory Lib "kernel32" Alias "GetWindowsDirectoryA" (ByVal lpBuffer As String, ByVal nSize As Long) As Long
+
+Public Function GetSystemDrive() As String
+    GetSystemDrive = Space(1000)
+    Call GetWindowsDirectory(GetSystemDrive, Len(GetSystemDrive))
+    GetSystemDrive = Left$(GetSystemDrive, 2)
+End Function

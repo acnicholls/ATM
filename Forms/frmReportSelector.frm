@@ -128,12 +128,13 @@ Private Sub Form_Load()
             frmReportSelector.Caption = "Date Transaction Report ..."
             lblMessage.Caption = "Please select the date for which the transactions should be printed: "
             intFileHandle = FreeFile
-            Open App.Path & "\Data\Transactions.dat" For Input As #intFileHandle
+            Open gstrTransactionFile For Input As #intFileHandle
             Do While Not EOF(intFileHandle)
                 'read a record
                  Input #intFileHandle, strDate, lngTransactionID, strUserName, strUserAccountNumber, strAccountType, _
                     strTransactionCode, curTransactionAmount, curUserChequingAccountBalance, curUserSavingsAccountBalance, _
                     intTellerDailyBalance
+                blnFound = False
                 'test for each date already in the combobox to see if the date value has been found
                 For intCounter = 0 To cboSelection.ListCount
                     If Format(strDate, "yyyy/dd/mm") = Format(cboSelection.List(intCounter), "yyyy/dd/mm") Then
@@ -156,7 +157,7 @@ Private Sub Form_Load()
             frmReportSelector.Caption = "Account Transaction Report ..."
             lblMessage.Caption = "Please select the Account # for which the transactions should be printed: "
             intFileHandle = FreeFile
-            Open App.Path & "\Data\Transactions.dat" For Input As #intFileHandle
+            Open gstrTransactionFile For Input As #intFileHandle
             Do While Not EOF(intFileHandle)
                 'read a record
                  Input #intFileHandle, strDate, lngTransactionID, strUserName, strUserAccountNumber, strAccountType, _

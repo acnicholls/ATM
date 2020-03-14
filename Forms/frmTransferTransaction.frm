@@ -219,7 +219,7 @@ Private Sub cmdOK_Click()
             gcurUserSavingsAccountBalance = gcurUserSavingsAccountBalance - curTransactionAmount
             gcurUserChequingAccountBalance = gcurUserChequingAccountBalance + curTransactionAmount
             WriteTransaction "S", "T", curTransactionAmount
-            gstrMessage = gstrMessage & "Chequing account to Savings account." & vbNewLine & vbNewLine
+            gstrMessage = gstrMessage & "Savings account to Chequing account." & vbNewLine & vbNewLine
             gstrMessage = gstrMessage & "New Chequing account balance:" & Format(gcurUserChequingAccountBalance, "currency")
             gstrMessage = gstrMessage & vbNewLine
             gstrMessage = gstrMessage & "New Savings account balance:" & Format(gcurUserSavingsAccountBalance, "currency") & vbNewLine

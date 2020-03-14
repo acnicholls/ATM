@@ -113,7 +113,7 @@ Private Sub mnuMoneyFillUp_Click()
     dtmToday = Date
     'open file and read teller's balance for today's date
     intFileHandle = FreeFile
-    Open App.Path & "\Data\DailyBalances.dat" For Input As #intFileHandle
+    Open gstrDailyBalanceFile For Input As #intFileHandle
     Do While Not EOF(intFileHandle)
         Input #intFileHandle, strDate, intBalance
         'test date on file for equality to today's date

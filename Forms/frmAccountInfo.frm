@@ -283,6 +283,7 @@ Begin VB.Form frmAccountInfo
       Left            =   3720
       TabIndex        =   1
       Top             =   2280
+      Visible         =   0   'False
       Width           =   1215
    End
    Begin VB.Label Label5 

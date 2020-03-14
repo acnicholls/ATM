@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmMain 
    BackColor       =   &H00808080&
-   BorderStyle     =   4  'Fixed ToolWindow
+   BorderStyle     =   1  'Fixed Single
    ClientHeight    =   8985
    ClientLeft      =   6195
    ClientTop       =   645
@@ -14,7 +14,6 @@ Begin VB.Form frmMain
    MinButton       =   0   'False
    ScaleHeight     =   8985
    ScaleWidth      =   11985
-   ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Timer Timer1 
       Enabled         =   0   'False
@@ -339,6 +338,25 @@ End Sub
 Private Sub Form_Load()
     'set timer value to false to prevent timer activation without login
     Timer1.Enabled = False
+    '  set filenames for all data files
+    gstrDataFileLocation = GetSystemDrive & "\ProgramData\ATS"
+    gstrAccountFile = gstrDataFileLocation & "\Accounts.dat"
+    gstrTempAccountFile = gstrDataFileLocation & "\TempAccounts.dat"
+    gstrTransactionFile = gstrDataFileLocation & "\Transactions.dat"
+    gstrTransactionIdFile = gstrDataFileLocation & "\TransactionIdGenerator.dat"
+    gstrDailyBalanceFile = gstrDataFileLocation & "\DailyBalances.dat"
+    gstrTempDailyBalanceFile = gstrDataFileLocation & "\TempDailyBalances.dat"
+    gstrDatabaseFile = gstrDataFileLocation & "\ATM.mdb"
+    
+    If Not FolderExists("C:\ProgramData\ATS") Then
+        MkDir gstrDataFileLocation
+        FileCopy App.Path & "\Data\Accounts.dat", gstrAccountFile
+        FileCopy App.Path & "\Data\Transactions.dat", gstrTransactionFile
+        FileCopy App.Path & "\Data\TransactionIDGenerator.dat", gstrTransactionIdFile
+        FileCopy App.Path & "\Data\DailyBalances.dat", gstrDailyBalanceFile
+        FileCopy App.Path & "\Data\ATM.mdb", gstrDatabaseFile
+    End If
+    
 
 End Sub
 
@@ -367,3 +385,10 @@ Private Sub Timer1_Timer()
     Timer1.Enabled = False
     frmMain.Refresh
 End Sub
+
+
+Private Function FolderExists(sFullPath As String) As Boolean
+    Dim myFSO As Object
+    Set myFSO = CreateObject("Scripting.FileSystemObject")
+    FolderExists = myFSO.FolderExists(sFullPath)
+End Function

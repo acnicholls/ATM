@@ -45,8 +45,8 @@ Begin VB.Form frmPIN
       ForeColor       =   -2147483640
       Orientation     =   0
       Enabled         =   -1
-      Connect         =   "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=Data\ATM.mdb;Persist Security Info=False"
-      OLEDBString     =   "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=Data\ATM.mdb;Persist Security Info=False"
+      Connect         =   ""
+      OLEDBString     =   ""
       OLEDBFile       =   ""
       DataSourceName  =   ""
       OtherAttributes =   ""
@@ -186,30 +186,13 @@ End Sub
 Private Sub cmdOK_Click()
 'this sub varifies lgoin data and directs the user an appropriate screen based on security level
     Dim blnLoginOkay As Boolean
-'    Dim strUserType As String
-'    Dim intFileHandle As Integer
     Dim strName As String
     Dim strPIN As String
     Dim strAccountNumber As String
-'****************************************REMOVED CODE
-                                                
-                                                '    'test user name field for info
-                                                '    If txtUserName.Text = "" Then
-                                                '        MsgBox " You must enter your name to proceed", vbOKOnly, "Missing field ..."
-                                                '        txtUserName.SetFocus
-                                                '        Exit Sub
-                                                '    End If
-                                                '    'test PIN field for info
-                                                '    If txtPIN.Text = "" Then
-                                                '        MsgBox "You must enter your PIN to proceed", vbOKOnly, "Missing field ..."
-                                                '        txtPIN.SetFocus
-                                                '        Exit Sub
-                                                '    End If
     'if both fields are filled with info, count this as a login attempt
     'Add one to counter and ready variables for testing
     mintCounter = mintCounter - 1
     blnLoginOkay = True
-'    strUserType = ""
     '''''REady the recordset
     adoPINS.Refresh
     'goto first record
@@ -307,6 +290,10 @@ End Sub
 
 Private Sub Form_Load()
    mintCounter = 3
+   'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=..\..\ProgramData\ATS\ATM.mdb;Persist Security Info=False
+   Me.adoPINS.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & gstrDatabaseFile & ";Persist Security Info=False"
+   
+   
 
    
 End Sub
