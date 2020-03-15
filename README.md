@@ -18,6 +18,8 @@ presumably so that mutliple machines could access an "online" database for login
 
 - Data filenames are set dynamically, depending on the system drive. 
 
+- added an installer using Package & Deploy Wizard
+
 - a couple of minor bugs in the transaction file interaction for reports.
 
 ## What what changed originally
