@@ -1,5 +1,13 @@
-# ATM
-Automated Teller Machine
+# ATS
+## Contents
+[automated-teller-machine simulator](#automated-teller-simulator)
+
+[login-names-and-pins](#login-names-and-pins)
+
+[exiting-the-application](#exiting-the-application)
+
+
+Automated Teller Simulator
 ------------------------------------------------------------
 This project was designed to give the student some code to work with.
 
