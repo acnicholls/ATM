@@ -2,6 +2,8 @@
 ## Contents
 [automated-teller-machine simulator](#automated-teller-simulator)
 
+[installing-the-application](#installing-the-application)
+
 [login-names-and-pins](#login-names-and-pins)
 
 [exiting-the-application](#exiting-the-application)
