@@ -348,7 +348,7 @@ Private Sub Form_Load()
     gstrTempDailyBalanceFile = gstrDataFileLocation & "\TempDailyBalances.dat"
     gstrDatabaseFile = gstrDataFileLocation & "\ATM.mdb"
     
-    If Not FolderExists("C:\ProgramData\ATS") Then
+    If Not FolderExists(gstrDataFileLocation) Then
         MkDir gstrDataFileLocation
         FileCopy App.Path & "\Data\Accounts.dat", gstrAccountFile
         FileCopy App.Path & "\Data\Transactions.dat", gstrTransactionFile
